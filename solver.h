@@ -143,9 +143,21 @@ public:
     }
     
     void printOrder (Node* nodo) {
-            if (nodo->left) printOrder(nodo->left);
-            if(nodo->optr) cout << nodo->value << " ";
-            else cout << nodo->number << " ";
-            if (nodo->right) printOrder(nodo->right);
-        }
+        if (nodo->left) printOrder(nodo->left);
+        if(nodo->optr) cout << nodo->value << " ";
+        else cout << nodo->number << " ";
+        if (nodo->right) printOrder(nodo->right);
+    }
+
+    void destroy (Node* nodo) {
+        if (nodo->left) destroy(nodo->left);
+        if (nodo->right) destroy(nodo->right);
+        delete nodo;
+    }
+
+    ~Solver() {
+        for (auto x : nodes)
+            delete x;
+        if (root) destroy(root);
+    }
 };
