@@ -19,25 +19,20 @@ struct Node {
             this->value = value[0];
         } else {
             number = stoi(value);
-            this->value = ' ';
+            this->value = value[0]; //' ';
         }
     }
     Node(char value) : var{false}, value{value},
         optr{true}, left{nullptr}, right{nullptr} {
-    }
-    void setLeft (Node* left) {
-        this->left = left;
-    }
-    void setRight (Node* right) {
-        this->right = right;
     }
 };
 
 class Solver {
     Node* root;
     vector<Node*> nodes;
-    //vector <char> optr = {'-','+','*'};
     stack <char> sop;
+    stack <Node*> stree;
+    map <char,int> vars;
     map <char,int> optr = {{'-',1},{'+',1},{'*',2},{'/',2},{'^',3},{'(',0},{')',0}};
 public:
     Solver(string expresion) : root{nullptr} {
@@ -83,10 +78,44 @@ public:
         nodes.push_back(temp);
     }
     void buildTree() {
-
+        for (auto i : nodes) {
+            if (i->var) {
+                if (!vars.count(i->value)) {
+                    int value;
+                    cout << "El valor de '" << i->value << "' es: ";
+                    cin >> value;
+                    vars[i->value] = value;
+                }
+                i->number = vars[i->value];
+            }
+            if (i->optr) {
+                i->right = stree.top();
+                stree.pop();
+                i->left = stree.top();
+                stree.pop();
+            }
+            stree.push(i);
+        }
+        root = stree.top();
+        stree.pop();
     }
     void printn() {
-        for (auto x : nodes)
-            cout << x->value << " ";
+        cout << "Postfix : \n\t";
+        for (auto x : nodes) {
+            if(x->var) cout << x->number << " ";
+            else cout << x->value << " ";
+        } 
+        cout << endl;
     }
+    void printree() {
+        cout << "Tree in-order: \n\t";
+        printOrder(root);
+        cout << endl;
+    }
+    void printOrder (Node* nodo) {
+            if (nodo->left) printOrder(nodo->left);
+            if(nodo->var) cout << nodo->number << " ";
+            else cout << nodo->value << " ";
+            if (nodo->right) printOrder(nodo->right);
+        }
 };
