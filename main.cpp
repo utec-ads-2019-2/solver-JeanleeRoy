@@ -8,5 +8,6 @@ int main(int argc, char const *argv[]) {
     Solver solver(expresion);
     solver.printn();
     solver.printree();
+    solver.solution();
     return 0;
 }
